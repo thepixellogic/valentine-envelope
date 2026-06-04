@@ -1,0 +1,205 @@
+:root {
+  --bg-dark: #06060c;
+  --env-base: #1e1b29;
+  --env-flap: #2a253a;
+  --env-accent: #ff2a6d;
+  --text-light: #f5f5fa;
+  --letter-bg: #12101a;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-dark);
+  background-image: radial-gradient(
+    circle at 50% 50%,
+    #151124 0%,
+    transparent 80%
+  );
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.card-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  perspective: 1000px; /* Establishes the 3D pipeline */
+}
+
+/* --- ENVELOPE STRUCTURAL ARCHITECTURE --- */
+.envelope-box {
+  position: relative;
+  width: 500px;
+  height: 300px;
+  background: var(--env-base);
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Top Flap utilizing 3D transform rotation mapping */
+.flap-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--env-flap);
+  clip-path: polygon(-1% 0%, 50% 56%, 101% 0);
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition:
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    z-index 0.2s;
+  z-index: 3;
+}
+
+/* Pocket overlay to encapsulate the internal card */
+.pocket-front {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--env-base);
+  clip-path: polygon(0 0%, 50% 56%, 100% 0%, 100% 100%, 0 100%);
+  border-radius: 0 0 12px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  z-index: 2;
+}
+
+/* --- THE LETTER SHEET --- */
+.letter-sheet {
+  position: absolute;
+  bottom: 5px;
+  left: 10px;
+  width: 480px;
+  height: 280px;
+  background: var(--letter-bg);
+  border: 1px solid rgba(255, 2a, 109, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    z-index 0.3s;
+  z-index: 1; /* Sits completely safely inside the pocket initially */
+}
+
+.letter-content {
+  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.letter-content h3 {
+  color: var(--env-accent);
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.letter-content p {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: #a09cb0;
+}
+
+.letter-content .signature {
+  margin-top: auto;
+  align-self: center;
+  font-size: 1.2rem;
+}
+
+/* --- ACTIVE TRANSFORMATION ENGINE STATES --- */
+.envelope-box.open .flap-top {
+  transform: rotateX(180deg);
+  z-index: 0; /* Drops behind structural viewport to clear path */
+}
+
+.envelope-box.open .letter-sheet {
+  transform: translateY(-160px);
+  /*Slidesupwardsneatlyoutofpocket*/
+  z-index: 2;
+  /*Elevatesabovefrontpocketlayercompletely*/
+  transition-delay: 0.22s;
+  -webkit-transform: translateY(-160px);
+  -moz-transform: translateY(-160px);
+  -ms-transform: translateY(-160px);
+  -o-transform: translateY(-160px);
+}
+
+/* --- INTERACTIVE CONTROLLER --- */
+.trigger-btn {
+  background: transparent;
+  border: 1px solid var(--env-accent);
+  color: #fff;
+  padding: 12px 32px;
+  border-radius: 30px;
+  width: 190px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background-image: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 2a, 109, 0.1),
+    transparent
+  );
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(255, 2a, 109, 0.15);
+}
+
+.trigger-btn:hover {
+  background-color: var(--env-accent);
+  box-shadow: 0 0 25px rgba(255, 2a, 109, 0.4);
+  transform: translateY(-2px);
+}
+
+/* --- PARTICLE EMISSION CORE --- */
+.heart-engine {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.floating-heart {
+  position: absolute;
+  color: var(--env-accent);
+  filter: drop-shadow(0 0 6px var(--env-accent));
+  pointer-events: none;
+  opacity: 0;
+  animation: floatUpUp var(--duration) cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes floatUpUp {
+  0% {
+    transform: translate(var(--x-start), 120px) scale(0.5);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x-end), -100px) scale(var(--scale));
+    opacity: 0;
+  }
+}
