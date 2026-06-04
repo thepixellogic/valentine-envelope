@@ -16,5 +16,5 @@ A high-performance, zero-dependency micro-interaction component built with raw w
 Simply clone the workspace and load `index.html` directly into any modern browser engine:
 
 ```bash
-git clone [https://github.com/your-username/valentine-envelope-engine.git](https://github.com/your-username/valentine-envelope-engine.git)
+git clone [https://github.com/thepixellogic/valentine-envelope-engine.git](https://github.com/thepixellogic/valentine-envelope-engine.git)
 cd valentine-envelope-engine
